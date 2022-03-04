@@ -1,6 +1,4 @@
 import my_game
-import random
-import time
 
 kyiv = my_game.City("Київ")
 kyiv.set_open(0)
@@ -163,7 +161,6 @@ input()
 
 while dead == False:
     open_cities_name = [i.name for i in cities if total >= i.open and i.free == False]
-    open_cities = [i for i in cities if total >= i.open and i.free == False]
     go_city = [i for i in cities if (i.friend != '' or i.item != ''or i.free == False) and total >= i.open]
     go_city_name = [i.name for i in cities if (i.friend != '' or i.item != '' or i.free == False) and total >= i.open]
 
@@ -195,13 +192,12 @@ while dead == False:
 
     command = input("> ")
     if command == 'Харків':
-        boss_level_one()
+        kharchiv.boss_level_one()
+        kharchiv.boss_level_two()
         break
     if command in go_city_name:
-        # Move in the given direction
-        current_city =go_city[go_city_name.index(command)]
+        current_city = go_city[go_city_name.index(command)]
     elif command == "допомога" and type(item).__name__ != 'Thing':
-        # Talk to the inhabitant - check whether there is one!
         if friend != '':
             backpack.append(friend.ask_help(current_city))
             print('Тепер ти знаєш як {}'.format(item.get_name()))
@@ -211,7 +207,6 @@ while dead == False:
             print('Тут немає жодного друга')
     elif command == "знешкодити":
         if inhabitant != '':
-            # Fight with the inhabitant, if there is one
             print("Обери, чим битимеш москалів\n")
             for i in backpack:
                 print(i.name)
@@ -221,17 +216,13 @@ while dead == False:
                 if i.name == fight_with:
                     fight_with = i
 
-            # Do I have this item?
             if fight_with in backpack:
-
                 if inhabitant.fight(fight_with) == True:
-                    # What happens if you win?
                     print("Ти звільнив місто!")
                     total += current_city.points
                     current_city.enemy = ''
                     current_city.free = True
                 else:
-                    # What happens if you lose?
                     print("Цей спосіб тут не працює")
                     print("Спробуй ще раз")
             else:
@@ -248,100 +239,3 @@ while dead == False:
             print("Тут немає чого брати")
     else:
         print("Я не знаю як " + command)
-
-
-    def boss_level_one():
-        print("""
-Вітаю! Залишилось звільнити останнє місто - Харків.
-Для цього тобі знадобиться вміння управляти літаком МіГ-29.
-
-Інструкція:
-
-Зараз ти знаходишся під обстрілом ворожого літака,
-тобі потрібно ухилятися від ракет, які ти бачиш на радарі.
-Як? - Потрібно ввести одну з чотирьох команд(праворуч, ліворуч, вгору, вниз).
-Будь уважним, час обмежений!
-Натисни Enter, коли будеш готовий""")
-        input('> ')
-        win = False
-        while win == False:
-            times = 0
-            breaks = 0
-            dec = ['праворуч', 'ліворуч', 'вгору', 'вниз']
-            shot = ['праворуч', 'ліворуч', 'згори', 'знизу']
-            win = False
-            while times != 5 or breaks != 3:
-                shoot = random.choice(shot)
-                print('Обережно! Обстріл {}'.format(shoot))
-                start = time.time()
-                decision = input('> ')
-                end = time.time()
-                if end-start > 6:
-                    breaks += 1
-                    print('Тебе підсмажили. Думай швидше!')
-                elif decision not in dec:
-                    breaks += 1
-                    print('Такої опції немає')
-                elif dec[shot.index(shoot)] == decision:
-                    breaks += 1
-                    print('Тебе підсмажили. Думай краще!')
-                else:
-                    times += 1
-                    print('Так тримати!')
-                if breaks == 3:
-                    print('Тебе збили! Спробуй ще раз.')
-                    input('> ')
-                elif times == 5:
-                    print('Молодець! Ти зміг втекти зпід обстрілу!\n')
-                    win = True
-                if win == True:
-                    break
-        boss_level_two()
-
-
-    def boss_level_two():
-        print("""
-Ти неймовірний! Залишилось зовсім трохи.
-
-Настав час надерти зад рашистам, адже вони виглядають набагато краще підсмаленими.
-Слідкуй за радаром і випускай ракети в напрямку ворожих літаків.
-Хай щастить!
-Натисни Enter, коли будеш готовий""")
-        input('> ')
-        win = False
-        while win == False:
-            times = 0
-            breaks = 0
-            dec = ['праворуч', 'ліворуч', 'вгору', 'вниз']
-            shot = ['праворуч', 'ліворуч', 'згори', 'знизу']
-            win = False
-            while times != 5 or breaks != 3:
-                shoot = random.choice(shot)
-                print('Увага! Літак {}'.format(shoot))
-                start = time.time()
-                decision = input('> ')
-                end = time.time()
-                if end-start > 6:
-                    breaks += 1
-                    print('Ти пропустив свій шанс. Думай швидше!')
-                elif decision not in dec:
-                    breaks += 1
-                    print('Такої опції немає')
-                elif dec[shot.index(shoot)] != decision:
-                    breaks += 1
-                    print('Ти впустив свій шанс. Думай краще!')
-                else:
-                    times += 1
-                    print('Так тримати!')
-                if breaks == 3:
-                    print('Ти пропустив 3 літаки підряд! Спробуй ще раз.')
-                    input('> ')
-                elif times == 5:
-                    print('\nЙухуу! Завдяки тобі жителі Харкова змогли насолодитися рашистським салютом')
-                    win = True
-                if win == True:
-                        break
-        print("""
-Ти звільнив Україну від окупантів!
-
-Слава Україні!""")
